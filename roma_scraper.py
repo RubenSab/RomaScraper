@@ -52,9 +52,27 @@ class RomaScraper():
                 f.write(', '.join([f'"{field}"' for field in article.values()])+'\n')
 
 
+    def export_html(self, filename) -> None:
+        with open(filename, 'w') as f:
+            f.write('<!DOCTYPE html>\n<html>\n<head>\n')
+            f.write('<meta charset="UTF-8">\n')
+            f.write('<title>Notizie da forzaroma.info</title>\n')
+            f.write('<link rel="stylesheet" href="style.css">\n')
+            f.write('</head>\n<body>\n')
+            f.write('<h1>Notizie da forzaroma.info</h1>\n')
+            f.write('<ul>\n')
+            for article in self.parsed_news:
+                link = article['link']
+                text = f"{article['title']} ({article['date']})"
+                f.write(f'\t<li><a href={link}>{text}</a></li>\n')
+            f.write('</ul>\n')
+            f.write('</body>\n</html>')
+
+
 if __name__ == '__main__':
 
     scraper = RomaScraper()
     html = scraper.get_html()
     scraper.get_titles(html)
     scraper.export_csv('news.csv')
+    scraper.export_html('website/news.html')
